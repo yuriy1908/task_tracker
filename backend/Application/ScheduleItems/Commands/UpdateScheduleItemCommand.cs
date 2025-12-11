@@ -18,7 +18,7 @@ namespace Application.ScheduleItems.Commands
             var scheduleItem = await scheduleItemRepository.GetById(request.Id, cancellationToken);
             if (scheduleItem == null)
             {
-                throw new Exception("Not found entity");
+                throw new Exception("Not found scheduleItem");
             }
 
             if (request.Title != null) 

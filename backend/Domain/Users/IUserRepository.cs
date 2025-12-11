@@ -10,8 +10,8 @@ namespace Domain.Users
     {
         Task<User?> GetById(int id, CancellationToken cancellationToken);
         Task<IEnumerable<User>> GetAll(CancellationToken cancellationToken);
-        Task<int> Add(User scheduleItem, CancellationToken cancellationToken);
-        Task Update(User scheduleItem, CancellationToken cancellationToken);
+        Task<int> Add(User user, CancellationToken cancellationToken);
+        Task Update(User user, CancellationToken cancellationToken);
         Task Delete(int id, CancellationToken cancellationToken);
     }
 }
