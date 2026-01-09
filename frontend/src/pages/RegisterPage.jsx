@@ -1,11 +1,10 @@
 import { toast } from "react-hot-toast";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
 import { Mail, KeyRound } from "lucide-react";
 import {set, useForm} from "react-hook-form"
-import axios from "axios";
 import { useNavigate } from "react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import api from "../api/axiosClient";
+import { isAuthenticated } from "../utils/auth";
 
 const RegisterPage = () => {
 
@@ -13,21 +12,27 @@ const RegisterPage = () => {
 
   const navigate = useNavigate()
 
-  const auth = useContext(AuthContext)
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate('/home')
+    }
+  }, [])
 
   const {register, handleSubmit} = useForm()
 
   const registerHandler = async (data) => {
     setLoading(true)
     try {
-      await axios.post(
-        '/api/auth/register',
+      await api.post(
+        '/User/register',
         data
       )
-      const userData = await axios.post(
-        '/api/auth/login',
-        data)
-      auth.login(userData.token, userData.userId)
+      await api
+        .post('/User/login', data)
+        .then(res => {
+        localStorage.setItem("access_token", res.data);
+        navigate('/home')
+      });
     }
     catch (error) {
       toast.error(error.message)
