@@ -9,7 +9,6 @@ namespace Application.Users
             return new UserDto()
             { 
                 Id = user.Id, 
-                Name = user.Name, 
                 Email = user.Email, 
                 Password = user.Password 
             };

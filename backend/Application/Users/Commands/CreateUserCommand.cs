@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Users.Commands
 {
-    public record CreateUserCommand(string Name, string Email, string Password) : IRequest<int>;
+    public record CreateUserCommand(string Email, string Password) : IRequest<int>;
 
     public class CreateUserCommandHandler(IUserRepository userRepository) : IRequestHandler<CreateUserCommand, int>
     {
@@ -16,7 +16,6 @@ namespace Application.Users.Commands
         {
             var user = new User()
             {
-                Name = request.Name,
                 Email = request.Email,
                 Password = request.Password
             };

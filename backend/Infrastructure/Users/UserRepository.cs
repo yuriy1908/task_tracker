@@ -51,11 +51,6 @@ namespace Infrastructure.Users
             return await _context.Users.FirstOrDefaultAsync(x => x.Email == email && !x.IsDeleted, cancellationToken);
         }
 
-        public async Task<User?> GetByName(string name, CancellationToken cancellationToken)
-        {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Name == name && !x.IsDeleted, cancellationToken);
-        }
-
         public async Task Update(User user, CancellationToken cancellationToken)
         {
             user.UpdatedAt = DateTime.Now;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Users.Commands
 {
-    public record UpdateUserCommand(int Id, string Name, string Email, string Password) : IRequest;
+    public record UpdateUserCommand(int Id, string Email, string Password) : IRequest;
 
     public class UpdateUserCommandHandler(IUserRepository userRepository) : IRequestHandler<UpdateUserCommand>
     {
@@ -18,9 +18,6 @@ namespace Application.Users.Commands
 
             if (user == null)
                 throw new Exception("User not found");
-
-            if (request.Name !=  null) 
-                user.Name = request.Name;
 
             if (request.Email != null)
                 user.Email = request.Email;

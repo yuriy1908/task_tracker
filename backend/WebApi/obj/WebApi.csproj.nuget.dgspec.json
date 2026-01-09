@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\WebApi\\WebApi.csproj": {}
+    "C:\\projects\\1\\task_tracker\\backend\\WebApi\\WebApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Application\\Application.csproj": {
+    "C:\\projects\\1\\task_tracker\\backend\\Application\\Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Application\\Application.csproj",
+        "projectUniqueName": "C:\\projects\\1\\task_tracker\\backend\\Application\\Application.csproj",
         "projectName": "Application",
-        "projectPath": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Application\\Application.csproj",
-        "packagesPath": "C:\\Users\\www\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Application\\obj\\",
+        "projectPath": "C:\\projects\\1\\task_tracker\\backend\\Application\\Application.csproj",
+        "packagesPath": "C:\\Users\\timas\\.nuget\\packages\\",
+        "outputPath": "C:\\projects\\1\\task_tracker\\backend\\Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\www\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\timas\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,14 +26,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Domain\\Domain.csproj"
+              "C:\\projects\\1\\task_tracker\\backend\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\projects\\1\\task_tracker\\backend\\Domain\\Domain.csproj"
               }
             }
           }
@@ -57,6 +58,14 @@
             "MediatR": {
               "target": "Package",
               "version": "[14.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.11, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.0.1, )"
             }
           },
           "imports": [
@@ -75,24 +84,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Domain\\Domain.csproj": {
+    "C:\\projects\\1\\task_tracker\\backend\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\projects\\1\\task_tracker\\backend\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Domain\\Domain.csproj",
-        "packagesPath": "C:\\Users\\www\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Domain\\obj\\",
+        "projectPath": "C:\\projects\\1\\task_tracker\\backend\\Domain\\Domain.csproj",
+        "packagesPath": "C:\\Users\\timas\\.nuget\\packages\\",
+        "outputPath": "C:\\projects\\1\\task_tracker\\backend\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\www\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\timas\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -101,6 +110,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -140,24 +150,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Infrastructure\\Infrastructure.csproj": {
+    "C:\\projects\\1\\task_tracker\\backend\\Infrastructure\\Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Infrastructure\\Infrastructure.csproj",
+        "projectUniqueName": "C:\\projects\\1\\task_tracker\\backend\\Infrastructure\\Infrastructure.csproj",
         "projectName": "Infrastructure",
-        "projectPath": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Infrastructure\\Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\www\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Infrastructure\\obj\\",
+        "projectPath": "C:\\projects\\1\\task_tracker\\backend\\Infrastructure\\Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\timas\\.nuget\\packages\\",
+        "outputPath": "C:\\projects\\1\\task_tracker\\backend\\Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\www\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\timas\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -166,14 +176,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Domain\\Domain.csproj"
+              "C:\\projects\\1\\task_tracker\\backend\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\projects\\1\\task_tracker\\backend\\Domain\\Domain.csproj"
               }
             }
           }
@@ -239,24 +250,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\WebApi\\WebApi.csproj": {
+    "C:\\projects\\1\\task_tracker\\backend\\WebApi\\WebApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\WebApi\\WebApi.csproj",
+        "projectUniqueName": "C:\\projects\\1\\task_tracker\\backend\\WebApi\\WebApi.csproj",
         "projectName": "WebApi",
-        "projectPath": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\WebApi\\WebApi.csproj",
-        "packagesPath": "C:\\Users\\www\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\WebApi\\obj\\",
+        "projectPath": "C:\\projects\\1\\task_tracker\\backend\\WebApi\\WebApi.csproj",
+        "packagesPath": "C:\\Users\\timas\\.nuget\\packages\\",
+        "outputPath": "C:\\projects\\1\\task_tracker\\backend\\WebApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\www\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\timas\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -265,17 +276,18 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Application\\Application.csproj": {
-                "projectPath": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Application\\Application.csproj"
+              "C:\\projects\\1\\task_tracker\\backend\\Application\\Application.csproj": {
+                "projectPath": "C:\\projects\\1\\task_tracker\\backend\\Application\\Application.csproj"
               },
-              "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Infrastructure\\Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\www\\source\\repos\\task_tracker\\backend\\Infrastructure\\Infrastructure.csproj"
+              "C:\\projects\\1\\task_tracker\\backend\\Infrastructure\\Infrastructure.csproj": {
+                "projectPath": "C:\\projects\\1\\task_tracker\\backend\\Infrastructure\\Infrastructure.csproj"
               }
             }
           }
@@ -299,6 +311,10 @@
             "MediatR": {
               "target": "Package",
               "version": "[14.0.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[9.0.11, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
@@ -342,7 +358,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

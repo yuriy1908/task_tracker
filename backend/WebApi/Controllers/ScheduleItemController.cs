@@ -2,11 +2,14 @@
 using Application.ScheduleItems.Commands;
 using Application.ScheduleItems.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Extensions;
 
 namespace WebApi.Controllers
 {
+
     [ApiController]
     [Route("[controller]")]
     public class ScheduleItemController(IMediator mediator) : ControllerBase
@@ -31,10 +34,15 @@ namespace WebApi.Controllers
             return await mediator.Send(new GetScheduleItemsByUserIdQuery(userId));
         }
 
-        [HttpGet("by-date-interval/{userId}/{dateStart}/{dateEnd}")]
-        public async Task<IEnumerable<ScheduleItemDto>> GetByDateInterval(int userId, DateTime dateStart, DateTime dateEnd)
+        [Authorize]
+        [HttpGet("by-date-interval")]
+        public async Task<IEnumerable<ScheduleItemDto>> GetByDateInterval([FromQuery] DateTime from, [FromQuery] DateTime to)
         {
-                return await mediator.Send(new GetScheduleItemsByDateIntervalQuery(userId, dateStart, dateEnd));
+            var userId = User.GetUserId();
+            Console.WriteLine(userId);
+            return await mediator.Send(new GetScheduleItemsByDateIntervalQuery(userId,
+                                                                               DateTime.SpecifyKind(from, DateTimeKind.Utc),
+                                                                               DateTime.SpecifyKind(to, DateTimeKind.Utc)));
         }
 
         [HttpGet]
