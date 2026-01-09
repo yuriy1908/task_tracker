@@ -54,6 +54,13 @@ namespace Infrastructure.ScheduleItems
             return await _context.ScheduleItems.Where(x => x.UserId == UserId && !x.IsDeleted).ToListAsync(cancellationToken);
         }
 
+        public async Task<IEnumerable<ScheduleItem>> GetByDateInterval
+            (int UserId, DateTime DateStart, DateTime DateEnd, CancellationToken cancellationToken)
+        {
+            return await _context.ScheduleItems
+                .Where(x => x.UserId == UserId && !x.IsDeleted && x.StartTime >= DateStart && x.StartTime <= DateEnd)
+                .ToListAsync(cancellationToken);
+        }
         public async Task Update(ScheduleItem scheduleItem, CancellationToken cancellationToken)
         {
             scheduleItem.UpdatedAt = DateTime.UtcNow;

@@ -24,6 +24,34 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("by-email/{email}")]
+        public async Task<UserDto?> GetByEmail(string email)
+        {
+            try
+            {
+                return await mediator.Send(new GetUserByEmailQuery(email));
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        [HttpGet("by-name/{name}")]
+        public async Task<UserDto?> GetByName(string name)
+        {
+            try
+            {
+                return await mediator.Send(new GetUserByNameQuery(name));
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         [HttpGet]
         public async Task<IEnumerable<UserDto>> GetAll()
         {

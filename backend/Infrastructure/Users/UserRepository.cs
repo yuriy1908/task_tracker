@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -43,6 +44,16 @@ namespace Infrastructure.Users
         public async Task<User?> GetById(int id, CancellationToken cancellationToken)
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);
+        }
+
+        public async Task<User?> GetByEmail(string email, CancellationToken cancellationToken)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email && !x.IsDeleted, cancellationToken);
+        }
+
+        public async Task<User?> GetByName(string name, CancellationToken cancellationToken)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.Name == name && !x.IsDeleted, cancellationToken);
         }
 
         public async Task Update(User user, CancellationToken cancellationToken)
