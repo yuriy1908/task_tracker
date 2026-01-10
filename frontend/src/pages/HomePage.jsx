@@ -9,7 +9,7 @@ const HomePage = () =>
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const daysOfWeek = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
   const startOfWeek = (date) => {
     const d = new Date(date);
@@ -65,6 +65,23 @@ const HomePage = () =>
     }, {});
   }, [tasks]);
 
+  const DAY_MINUTES = 24 * 60;
+
+  const minutesFromMidnight = (date) => {
+    return date.getHours() * 60 + date.getMinutes();
+  }
+
+  const taskTopPercent = (start) => {
+    return (minutesFromMidnight(start) / DAY_MINUTES) * 100;
+  }
+
+  const taskHeightPercent = (start, end) => {
+    const durationMinutes =
+      (end.getTime() - start.getTime()) / 60000;
+    return (durationMinutes / DAY_MINUTES) * 100;
+  }
+
+
   return (
     <div className="min-h-screen bg-base-200 p-6">
       <div className="flex items-center justify-between mb-6">
@@ -97,34 +114,42 @@ const HomePage = () =>
                 </span>
               </h2>
 
-              <div className="mt-3 flex flex-col gap-2">
+              <div className="relative h-full min-h-[600px]">
                 {loading && (
-                  <p className="text-xs opacity-50">Loading<span className="loading loading-dots loading-xs"></span></p>
+                  <p className="text-xs opacity-50">Загрузка<span className="loading loading-dots loading-xs"></span></p>
                 )}
 
                 {!loading && (tasksByDay[index] ?? []).length === 0 && (
-                  <p className="text-xs opacity-50">No tasks</p>
+                  <p className="text-xs opacity-50">Нет задач</p>
                 )}
 
-                {(tasksByDay[index] ?? []).map((task) => (
-                  <div
-                    key={task.id}
-                    className="rounded-xl border border-base-300 p-2 hover:bg-base-200 transition"
-                  >
-                    <p className="text-sm font-medium">{task.title}</p>
-                    <p className="text-xs opacity-60">
-                      {new Date(task.startTime).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                      {task.endDate &&
-                        ` – ${new Date(task.endTime).toLocaleTimeString([], {
+                {(tasksByDay[index] ?? []).map((task) => {
+                  
+                  const start = new Date(task.startTime);
+                  const end = new Date(task.endTime);
+                  return (
+                    <div
+                      key={task.id}
+                      className="absolute left-1 right-1 rounded-lg bg-primary text-white p-2 text-xs sm:text-sm shadow"
+                      style={{
+                              top: `${taskTopPercent(start)}%`,
+                              height: `${taskHeightPercent(start, end)}%`
+                            }}
+                    >
+                      <p className="text-sm font-medium">{task.title}</p>
+                      <p className="text-xs opacity-60">
+                        {start.toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
-                        })}`}
-                    </p>
-                  </div>
-                ))}
+                        })}-
+                        {end.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                      </p>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>
