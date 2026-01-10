@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MediatR;
 using Domain.ScheduleItems;
+using Domain.Users;
 
 namespace Application.ScheduleItems.Commands
 {
@@ -14,10 +15,10 @@ namespace Application.ScheduleItems.Commands
         string Description,
         DateTime StartTime,
         DateTime EndTime,
-        int UserId,
         ScheduleItemStatus Status) : IRequest<int>;
 
-    public class CreateScheduleItemCommandHandler(IScheduleItemRepository scheduleItemRepository) : IRequestHandler<CreateScheduleItemCommand, int>
+    public class CreateScheduleItemCommandHandler(IScheduleItemRepository scheduleItemRepository, IUserContext userContext)
+        : IRequestHandler<CreateScheduleItemCommand, int>
     {
         public async Task<int> Handle(CreateScheduleItemCommand request, CancellationToken cancellationToken)
         {
@@ -27,7 +28,7 @@ namespace Application.ScheduleItems.Commands
                 Description = request.Description,
                 StartTime = request.StartTime,
                 EndTime = request.EndTime,
-                UserId = request.UserId,
+                UserId = userContext.GetUserId(),
                 Status = request.Status,
             };
 

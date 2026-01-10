@@ -9,3 +9,6 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active{
     transition-delay: 9999s;
 }
+
+
+/* transition: top 0.2s ease, height 0.2s ease; */

@@ -45,12 +45,6 @@ namespace WebApi.Controllers
             return await mediator.Send(new GetUsersQuery());
         }
 
-        [HttpPost]
-        public async Task<int> Create(CreateUserCommand command)
-        {
-            return await mediator.Send(command);
-        }
-
         [HttpPut]
         public async Task Update(UpdateUserCommand command)
         {

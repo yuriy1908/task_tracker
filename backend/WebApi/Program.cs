@@ -23,6 +23,8 @@ public class Programm
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
         builder.Services.AddScoped<IScheduleItemRepository, ScheduleItemRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<IUserContext, UserContext>();
 
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly));
 

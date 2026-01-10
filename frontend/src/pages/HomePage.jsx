@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import api from "../api/axiosClient";
 import axios from "axios";
 import { ArrowBigLeft, ArrowBigRight } from 'lucide-react'
+import AddTaskModal from "../components/AddTaskModal";
+import { dateToMonday, addDays, daysOfWeek } from "../utils/dates";
 
 const HomePage = () => 
 {
@@ -9,28 +11,30 @@ const HomePage = () =>
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const daysOfWeek = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+  const [modal, setModal] = useState({
+    open: false,
+    date: null,
+  });
 
-  const startOfWeek = (date) => {
-    const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    return new Date(d.setDate(diff));
+  const openModal = (date) => {
+    setModal({ open: true, date });
+  };
+
+  const closeModal = () => {
+    setModal({ open: false, date: null });
+  };
+
+  const onAddModalSubmit = (title, date) => 
+  {
+    api.post('/ScheduleItem/')
   }
 
-  const addDays = (date, days) => {
-    const d = new Date(date);
-    d.setDate(d.getDate() + days);
-    return d;
-  }
-
-  const weekStart = useMemo(() => startOfWeek(currentDate), [currentDate]);
+  const weekStart = useMemo(() => dateToMonday(currentDate), [currentDate]);
   const weekEnd = useMemo(() => addDays(weekStart, 6), [weekStart]);
 
-  const weekRangeLabel = useMemo(() => {
-
-    return `${weekStart.toLocaleDateString()} – ${weekEnd.toLocaleDateString()}`;
-  }, [weekStart, weekEnd]);
+  const weekRangeLabel = useMemo(() => 
+    `${weekStart.toLocaleDateString()} – ${weekEnd.toLocaleDateString()}`, [weekStart, weekEnd]
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -65,56 +69,50 @@ const HomePage = () =>
     }, {});
   }, [tasks]);
 
-  const DAY_MINUTES = 24 * 60;
-
-  const minutesFromMidnight = (date) => {
-    return date.getHours() * 60 + date.getMinutes();
-  }
-
-  const taskTopPercent = (start) => {
-    return (minutesFromMidnight(start) / DAY_MINUTES) * 100;
-  }
-
-  const taskHeightPercent = (start, end) => {
-    const durationMinutes =
-      (end.getTime() - start.getTime()) / 60000;
-    return (durationMinutes / DAY_MINUTES) * 100;
-  }
-
 
   return (
-    <div className="min-h-screen bg-base-200 p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Расписание на неделю</h1>
-        <div className="flex gap-2 items-center">
+    <div className="min-h-screen bg-base-200 p-6 pt-2">
+      <div className="navbar mb-6">
+        <div className="navbar-start">
+          <h1 className="text-2xl font-bold">Расписание на неделю</h1>
+        </div>
+
+        <div className="navbar-center" />
+
+        <div className="navbar-end flex gap-2 items-center">
           <button
-            className="btn btn-sm"
+            className="btn btn-md"
             onClick={() => setCurrentDate(addDays(currentDate, -7))}
           >
-          <ArrowBigLeft/>
+            <ArrowBigLeft />
           </button>
           <span className="font-medium opacity-70">{weekRangeLabel}</span>
           <button
-            className="btn btn-sm"
+            className="btn btn-md"
             onClick={() => setCurrentDate(addDays(currentDate, 7))}
           >
-          <ArrowBigRight/>
+            <ArrowBigRight />
           </button>
         </div>
       </div>
+
 
       <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
         {daysOfWeek.map((day, index) => (
           <div key={day} className="card bg-base-100 shadow-md">
             <div className="card-body p-4">
-              <h2 className="card-title text-sm justify-between">
+              <h2 className="card-title text-sm">
+                <button className="btn btn-outline btn-sm" onClick={() => openModal(addDays(weekStart, index))}>
+                  +
+                </button>
                 {day}
-                <span className="badge badge-outline">
+                <span className="badge badge-outline ml-auto">
                   {(tasksByDay[index] ?? []).length}
                 </span>
+                
               </h2>
 
-              <div className="relative h-full min-h-[600px]">
+              <div className="flex flex-col mt-4 gap-2">
                 {loading && (
                   <p className="text-xs opacity-50">Загрузка<span className="loading loading-dots loading-xs"></span></p>
                 )}
@@ -130,11 +128,7 @@ const HomePage = () =>
                   return (
                     <div
                       key={task.id}
-                      className="absolute left-1 right-1 rounded-lg bg-primary text-white p-2 text-xs sm:text-sm shadow"
-                      style={{
-                              top: `${taskTopPercent(start)}%`,
-                              height: `${taskHeightPercent(start, end)}%`
-                            }}
+                      className="rounded-lg bg-primary text-white p-2 text-xs sm:text-sm shadow"
                     >
                       <p className="text-sm font-medium">{task.title}</p>
                       <p className="text-xs opacity-60">
@@ -155,6 +149,11 @@ const HomePage = () =>
           </div>
         ))}
       </div>
+      <AddTaskModal
+        open={modal.open}
+        defaultDate={modal.date}
+        onClose={closeModal}
+      />
     </div>
   );
 }

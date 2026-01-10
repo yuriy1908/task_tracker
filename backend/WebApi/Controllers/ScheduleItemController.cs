@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Extensions;
 
 namespace WebApi.Controllers
 {
@@ -38,11 +37,9 @@ namespace WebApi.Controllers
         [HttpGet("by-date-interval")]
         public async Task<IEnumerable<ScheduleItemDto>> GetByDateInterval([FromQuery] DateTime from, [FromQuery] DateTime to)
         {
-            var userId = User.GetUserId();
-            Console.WriteLine(userId);
-            return await mediator.Send(new GetScheduleItemsByDateIntervalQuery(userId,
-                                                                               DateTime.SpecifyKind(from, DateTimeKind.Utc),
-                                                                               DateTime.SpecifyKind(to, DateTimeKind.Utc)));
+            return await mediator.Send(
+                new GetScheduleItemsByDateIntervalQuery(DateTime.SpecifyKind(from, DateTimeKind.Utc),
+                                                        DateTime.SpecifyKind(to, DateTimeKind.Utc)));
         }
 
         [HttpGet]
@@ -51,6 +48,7 @@ namespace WebApi.Controllers
             return await mediator.Send(new GetScheduleItemsQuery());
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<int> Create(CreateScheduleItemCommand command)
         {
