@@ -3,13 +3,18 @@ import api from "../api/axiosClient";
 import axios from "axios";
 import { ArrowBigLeft, ArrowBigRight } from 'lucide-react'
 import AddTaskModal from "../components/AddTaskModal";
-import { dateToMonday, addDays, daysOfWeek } from "../utils/dates";
+import { DndContext } from "@dnd-kit/core";
+import DayColumn from "../components/DayColumn";
+import { daysOfWeek, copyTime } from "../utils/dates";
+import { startOfWeek, addDays } from "date-fns";
 
 const HomePage = () => 
 {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  
 
   const [modal, setModal] = useState({
     open: false,
@@ -29,8 +34,8 @@ const HomePage = () =>
     api.post('/ScheduleItem/')
   }
 
-  const weekStart = useMemo(() => dateToMonday(currentDate), [currentDate]);
-  const weekEnd = useMemo(() => addDays(weekStart, 6), [weekStart]);
+  const weekStart = useMemo(() => startOfWeek(currentDate, { weekStartsOn: 1 }), [currentDate]);
+  const weekEnd = useMemo(() => addDays(weekStart, 7), [weekStart]);
 
   const weekRangeLabel = useMemo(() => 
     `${weekStart.toLocaleDateString()} – ${weekEnd.toLocaleDateString()}`, [weekStart, weekEnd]
@@ -39,6 +44,7 @@ const HomePage = () =>
   useEffect(() => {
     const controller = new AbortController();
     const from = weekStart.toISOString().split("T")[0];
+
     const to = weekEnd.toISOString().split("T")[0];
 
     setLoading(true);
@@ -62,6 +68,7 @@ const HomePage = () =>
   const tasksByDay = useMemo(() => {
     return tasks.reduce((acc, task) => {
       const day = new Date(task.startTime).getDay();
+      
       const index = day === 0 ? 6 : day - 1;
       acc[index] ??= [];
       acc[index].push(task);
@@ -69,6 +76,32 @@ const HomePage = () =>
     }, {});
   }, [tasks]);
 
+  const onDragEnd = ({ active, over }) => {
+    if (!over) return;
+
+
+    const taskId = active.id;
+    const date = over.id;
+
+    const task = tasks.find(task => task.id==taskId)
+    
+    const newStartTime = copyTime(task.startTime, date)
+    const newEndTime = copyTime(task.endTime, date);
+
+    api.put("/ScheduleItem", {
+      Id: taskId,
+      StartTime: newStartTime,
+      EndTime: newEndTime,
+      Description: task.description,
+      Title: task.title
+    });
+
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === taskId ? { ...t, startTime: newStartTime, endTime: newEndTime } : t
+      )
+    );
+  }
 
   return (
     <div className="min-h-screen bg-base-200 p-6 pt-2">
@@ -96,8 +129,26 @@ const HomePage = () =>
         </div>
       </div>
 
+      {loading && (
+        <p className="text-xs opacity-50">Загрузка<span className="loading loading-dots loading-xs"></span></p>
+      )}
 
+      {!loading &&
       <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+      <DndContext onDragEnd={onDragEnd}>
+        {daysOfWeek.map((day, index) => (
+          <DayColumn
+            key={index}
+            date={addDays(weekStart, index)}
+            dayOfTheWeek={day}
+            tasks={tasksByDay[index] ?? []}
+          />
+        ))}
+      </DndContext>
+      </div>
+      }
+
+      {/* <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
         {daysOfWeek.map((day, index) => (
           <div key={day} className="card bg-base-100 shadow-md">
             <div className="card-body p-4">
@@ -148,7 +199,7 @@ const HomePage = () =>
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
       <AddTaskModal
         open={modal.open}
         defaultDate={modal.date}

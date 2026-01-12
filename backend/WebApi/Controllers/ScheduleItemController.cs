@@ -55,6 +55,7 @@ namespace WebApi.Controllers
             return await mediator.Send(command);
         }
 
+        [Authorize]
         [HttpPut]
         public async Task Update(UpdateScheduleItemCommand command)
         {
