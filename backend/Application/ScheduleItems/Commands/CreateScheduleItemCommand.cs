@@ -23,6 +23,12 @@ namespace Application.ScheduleItems.Commands
     {
         public async Task<ScheduleItem> Handle(CreateScheduleItemCommand request, CancellationToken cancellationToken)
         {
+            var existingScheduleItem = await scheduleItemRepository.GetByDateInterval(userContext.GetUserId(), request.StartTime, request.EndTime, cancellationToken);
+            if (existingScheduleItem.Any())
+            {
+                throw new Exception("ScheduleItems overlaps");
+            }
+
             var scheduleItem = new ScheduleItem 
             { 
                 Title = request.Title,

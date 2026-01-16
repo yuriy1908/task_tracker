@@ -9,7 +9,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=task_tracker;Username=postgres;Password=Glek2006SQL");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=task_tracker;Username=postgres;Password=psw");
         return new AppDbContext(optionsBuilder.Options);
     }
 }
