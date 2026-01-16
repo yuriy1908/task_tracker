@@ -18,6 +18,8 @@ namespace Application.ScheduleItems
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
 
+        public bool IsImportant { get; set; }
+
         public ScheduleItemStatus? Status { get; set; }
         public string StatusDisplayName { get; set; }
 

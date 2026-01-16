@@ -13,7 +13,7 @@ namespace Domain.ScheduleItems
         Task<IEnumerable<ScheduleItem>> GetAll(CancellationToken cancellationToken);
         Task<IEnumerable<ScheduleItem>> GetByUserId(int userId, CancellationToken cancellationToken);
         Task<IEnumerable<ScheduleItem>> GetByDateInterval(int userId, DateTime dateStart, DateTime dateEnd, CancellationToken cancellationToken);
-        Task<int> Add(ScheduleItem scheduleItem, CancellationToken cancellationToken);
+        Task<ScheduleItem> Add(ScheduleItem scheduleItem, CancellationToken cancellationToken);
         Task Update(ScheduleItem scheduleItem, CancellationToken cancellationToken);
         Task Delete(int id, CancellationToken cancellationToken);
     }

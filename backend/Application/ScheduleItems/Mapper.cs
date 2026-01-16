@@ -12,6 +12,7 @@ namespace Application.ScheduleItems
                 Title = group.Title,
                 Description = group.Description,
                 StartTime = group.StartTime,
+                IsImportant = group.IsImportant,
                 EndTime = group.EndTime,
                 Status = group.Status,
                 UserId = group.UserId,

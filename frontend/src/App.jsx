@@ -8,7 +8,7 @@ import ProtectedRoutes from './components/ProtectedRoutes'
 const App = () => {
 
   return (
-    <div className='bg-base-200'>
+    <div className='bg-base-200 font-display'>
     <Routes>
       <Route path="/" element={<Navigate to="/login" />}></Route>
       <Route path="/login" element={<LoginPage/>}></Route>

@@ -20,11 +20,11 @@ namespace Infrastructure.ScheduleItems
             _context = context;
         }
 
-        public async Task<int> Add(ScheduleItem scheduleItem, CancellationToken cancellationToken)
+        public async Task<ScheduleItem> Add(ScheduleItem scheduleItem, CancellationToken cancellationToken)
         {
             var entity = await _context.ScheduleItems.AddAsync(scheduleItem, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return entity.Entity.Id;
+            return entity.Entity;
         }
 
         public async Task Delete(int id, CancellationToken cancellationToken)

@@ -30,7 +30,7 @@ namespace Infrastructure.Users
             if (entity != null)
             {
                 entity.IsDeleted = true;
-                entity.UpdatedAt = DateTime.Now;
+                entity.UpdatedAt = DateTime.UtcNow;
                 _context.Users.Update(entity);
                 await _context.SaveChangesAsync(cancellationToken);
             }

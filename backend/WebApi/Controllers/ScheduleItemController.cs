@@ -1,6 +1,7 @@
 ﻿using Application.ScheduleItems;
 using Application.ScheduleItems.Commands;
 using Application.ScheduleItems.Queries;
+using Domain.ScheduleItems;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -50,7 +51,7 @@ namespace WebApi.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<int> Create(CreateScheduleItemCommand command)
+        public async Task<ScheduleItem> Create(CreateScheduleItemCommand command)
         {
             return await mediator.Send(command);
         }

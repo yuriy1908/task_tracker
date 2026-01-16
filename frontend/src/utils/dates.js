@@ -13,3 +13,10 @@ export const copyTime = (from, to) =>
     milliseconds: fromDate.getMilliseconds(),
   });
 }
+
+export const dateToString = (date) => {
+
+  return date
+          .toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'})
+          .replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
+} 

@@ -3,10 +3,12 @@ import api from "../api/axiosClient";
 import axios from "axios";
 import { ArrowBigLeft, ArrowBigRight } from 'lucide-react'
 import AddTaskModal from "../components/AddTaskModal";
-import { DndContext } from "@dnd-kit/core";
+import { closestCenter, DndContext, DragOverlay, PointerSensor, useSensors, useSensor } from "@dnd-kit/core";
 import DayColumn from "../components/DayColumn";
-import { daysOfWeek, copyTime } from "../utils/dates";
+import { daysOfWeek, copyTime, dateToString } from "../utils/dates";
 import { startOfWeek, addDays } from "date-fns";
+import TaskCard from "../components/TaskCard";
+import EditTaskModal from "../components/EditTaskModal";
 
 const HomePage = () => 
 {
@@ -14,79 +16,99 @@ const HomePage = () =>
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  
+  const [addModal, setAddModal] = useState({open: false, date: null,});
+  const openAddModal = (date) => setAddModal({ open: true, date });
+  const closeAddModal = () => setAddModal({ open: false, date: null });
 
-  const [modal, setModal] = useState({
-    open: false,
-    date: null,
-  });
-
-  const openModal = (date) => {
-    setModal({ open: true, date });
-  };
-
-  const closeModal = () => {
-    setModal({ open: false, date: null });
-  };
-
-  const onAddModalSubmit = (title, date) => 
-  {
-    api.post('/ScheduleItem/')
-  }
+  const [editModal, setEditModal] = useState({ open: false, task: null });
+  const openEditModal = (task) => setEditModal({ open: true, task });
+  const closeEditModal = () => setEditModal({ open: false, task: null });
 
   const weekStart = useMemo(() => startOfWeek(currentDate, { weekStartsOn: 1 }), [currentDate]);
   const weekEnd = useMemo(() => addDays(weekStart, 7), [weekStart]);
 
   const weekRangeLabel = useMemo(() => 
-    `${weekStart.toLocaleDateString()} – ${weekEnd.toLocaleDateString()}`, [weekStart, weekEnd]
+    `${weekStart.toLocaleDateString()} – ${addDays(weekEnd,-1).toLocaleDateString()}`, [weekStart, weekEnd]
+  );
+
+  const sensors = useSensors(
+  useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 0, 
+        filter: (event) => !event.target.closest("button")
+      },
+    })
   );
 
   useEffect(() => {
     const controller = new AbortController();
-    const from = weekStart.toISOString().split("T")[0];
-
-    const to = weekEnd.toISOString().split("T")[0];
+    const from = dateToString(weekStart)
+    const to = dateToString(weekEnd)
 
     setLoading(true);
-    api.get(`/ScheduleItem/by-date-interval?from=${from}&to=${to}`, {
+    api.get(`/ScheduleItem/by-date-interval`, {
       params: { from, to },
       signal: controller.signal
     })
-      .then((res) => setTasks(res.data))
-      .finally(() => setLoading(false))
+      .then((res) => {
+        const normalized = res.data.map((task) => ({
+          ...task,
+          startTime: new Date(task.startTime),
+          endTime: new Date(task.endTime),
+        }));
+        setTasks(normalized);
+      })
       .catch(err => {
         if (axios.isCancel(err)) {
           console.log("Request canceled in component:", err.message);
         } else {
           console.error(err);
         }
-      });
+      })
+      .finally(() => setLoading(false))
 
     return () => controller.abort();
   }, [weekStart, weekEnd]);
 
   const tasksByDay = useMemo(() => {
-    return tasks.reduce((acc, task) => {
-      const day = new Date(task.startTime).getDay();
-      
+    const acc = {};
+    tasks.forEach((task) => {
+      const start = task.startTime;
+      if (start < weekStart || start >= weekEnd) return;
+      const day = start.getDay();
       const index = day === 0 ? 6 : day - 1;
       acc[index] ??= [];
       acc[index].push(task);
-      return acc;
-    }, {});
+    });
+    return acc;
   }, [tasks]);
 
-  const onDragEnd = ({ active, over }) => {
-    if (!over) return;
+  const [activeTask, setActiveTask] = useState(null);
 
+  const onDragStart = ({ active }) => {
+    const task = tasks.find((t) => t.id === active.id);
+    setActiveTask(task);
+  };
+
+  const onDragEnd = ({ active, over }) => {
+    if (!over) {
+      setActiveTask(null);
+      return;
+    }
 
     const taskId = active.id;
-    const date = over.id;
+    const dayString = over.id;
 
-    const task = tasks.find(task => task.id==taskId)
+    const task = tasks.find((t) => t.id === taskId);
+
+    if (!task) {
+      setActiveTask(null);
+      return;
+    }
     
-    const newStartTime = copyTime(task.startTime, date)
-    const newEndTime = copyTime(task.endTime, date);
+    const newDate = new Date(dayString);
+    const newStartTime = copyTime(task.startTime, newDate);
+    const newEndTime = copyTime(task.endTime, newDate);
 
     api.put("/ScheduleItem", {
       Id: taskId,
@@ -101,27 +123,27 @@ const HomePage = () =>
         t.id === taskId ? { ...t, startTime: newStartTime, endTime: newEndTime } : t
       )
     );
+    setActiveTask(null);
   }
 
+
   return (
-    <div className="min-h-screen bg-base-200 p-6 pt-2">
-      <div className="navbar mb-6">
-        <div className="navbar-start">
-          <h1 className="text-2xl font-bold">Расписание на неделю</h1>
+    <div className="min-h-screen bg-base-100 p-6 pt-2 flex flex-col">
+      <div className="navbar mb-6 px-0 flex flex-row justify-center md:justify-normal">
+        <div className="">
+          <h1 className="text-3xl text-neutral font-black hidden md:block">Расписание на неделю</h1>
         </div>
 
-        <div className="navbar-center" />
-
-        <div className="navbar-end flex gap-2 items-center">
+        <div className="ml-0 md:ml-auto flex gap-2 items-center text-neutral">
           <button
-            className="btn btn-md"
+            className="btn btn-square btn-ghost"
             onClick={() => setCurrentDate(addDays(currentDate, -7))}
           >
             <ArrowBigLeft />
           </button>
-          <span className="font-medium opacity-70">{weekRangeLabel}</span>
+          <span className="font-normal text-xl">{weekRangeLabel}</span>
           <button
-            className="btn btn-md"
+            className="btn btn-square btn-ghost"
             onClick={() => setCurrentDate(addDays(currentDate, 7))}
           >
             <ArrowBigRight />
@@ -129,81 +151,47 @@ const HomePage = () =>
         </div>
       </div>
 
-      {loading && (
-        <p className="text-xs opacity-50">Загрузка<span className="loading loading-dots loading-xs"></span></p>
-      )}
-
-      {!loading &&
-      <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-      <DndContext onDragEnd={onDragEnd}>
-        {daysOfWeek.map((day, index) => (
-          <DayColumn
-            key={index}
-            date={addDays(weekStart, index)}
-            dayOfTheWeek={day}
-            tasks={tasksByDay[index] ?? []}
-          />
-        ))}
+      <DndContext
+        collisionDetection={closestCenter}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onDragCancel={() => setActiveTask(null)}
+        sensors={sensors}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-4 ">
+          {daysOfWeek.map((day, index) => {
+            const dayDate = addDays(weekStart, index);
+            return (<DayColumn
+              key={index}
+              dayOfTheWeek={day}
+              date={dateToString(dayDate)}
+              tasks={loading ? null : tasksByDay[index] ?? []}
+              loading={loading}
+              onAdd={openAddModal}
+              onEdit={openEditModal}
+              activeTask={activeTask}
+            />)
+            })}
+        </div>
+        <DragOverlay>
+          {activeTask ? <TaskCard task={activeTask} /> : null}
+        </DragOverlay>
       </DndContext>
-      </div>
-      }
-
-      {/* <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-        {daysOfWeek.map((day, index) => (
-          <div key={day} className="card bg-base-100 shadow-md">
-            <div className="card-body p-4">
-              <h2 className="card-title text-sm">
-                <button className="btn btn-outline btn-sm" onClick={() => openModal(addDays(weekStart, index))}>
-                  +
-                </button>
-                {day}
-                <span className="badge badge-outline ml-auto">
-                  {(tasksByDay[index] ?? []).length}
-                </span>
-                
-              </h2>
-
-              <div className="flex flex-col mt-4 gap-2">
-                {loading && (
-                  <p className="text-xs opacity-50">Загрузка<span className="loading loading-dots loading-xs"></span></p>
-                )}
-
-                {!loading && (tasksByDay[index] ?? []).length === 0 && (
-                  <p className="text-xs opacity-50">Нет задач</p>
-                )}
-
-                {(tasksByDay[index] ?? []).map((task) => {
-                  
-                  const start = new Date(task.startTime);
-                  const end = new Date(task.endTime);
-                  return (
-                    <div
-                      key={task.id}
-                      className="rounded-lg bg-primary text-white p-2 text-xs sm:text-sm shadow"
-                    >
-                      <p className="text-sm font-medium">{task.title}</p>
-                      <p className="text-xs opacity-60">
-                        {start.toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}-
-                        {end.toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                      </p>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div> */}
+    
       <AddTaskModal
-        open={modal.open}
-        defaultDate={modal.date}
-        onClose={closeModal}
+        open={addModal.open}
+        defaultDate={addModal.date}
+        onClose={closeAddModal}
+        onAddTask={(newTask) => setTasks(prev => [...prev, newTask])}
+      />
+      <EditTaskModal
+        open={editModal.open}
+        task={editModal.task}
+        onClose={closeEditModal}
+        onUpdateTask={(updatedTask) =>
+          setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t))
+        }
+        onDeleteTask={(id) => setTasks(prev => prev.filter(t => t.id !== id))}
       />
     </div>
   );

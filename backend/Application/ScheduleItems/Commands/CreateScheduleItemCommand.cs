@@ -15,20 +15,22 @@ namespace Application.ScheduleItems.Commands
         string Description,
         DateTime StartTime,
         DateTime EndTime,
-        ScheduleItemStatus Status) : IRequest<int>;
+        bool IsImportant,
+        ScheduleItemStatus Status) : IRequest<ScheduleItem>;
 
     public class CreateScheduleItemCommandHandler(IScheduleItemRepository scheduleItemRepository, IUserContext userContext)
-        : IRequestHandler<CreateScheduleItemCommand, int>
+        : IRequestHandler<CreateScheduleItemCommand, ScheduleItem>
     {
-        public async Task<int> Handle(CreateScheduleItemCommand request, CancellationToken cancellationToken)
+        public async Task<ScheduleItem> Handle(CreateScheduleItemCommand request, CancellationToken cancellationToken)
         {
             var scheduleItem = new ScheduleItem 
             { 
                 Title = request.Title,
                 Description = request.Description,
-                StartTime = request.StartTime,
-                EndTime = request.EndTime,
+                StartTime = DateTime.SpecifyKind(request.StartTime, DateTimeKind.Utc),
+                EndTime = DateTime.SpecifyKind(request.EndTime, DateTimeKind.Utc),
                 UserId = userContext.GetUserId(),
+                IsImportant = request.IsImportant,
                 Status = request.Status,
             };
 

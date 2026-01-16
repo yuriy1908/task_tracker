@@ -3,12 +3,23 @@
   themes: winter --default;
 }
 
-input:-webkit-autofill,
+/* input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active{
     transition-delay: 9999s;
+} */
+
+@layer base {
+  @font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: optional;
+    src: url(/fonts/Montserrat.ttf) format("ttf");
+  }
 }
 
-
-/* transition: top 0.2s ease, height 0.2s ease; */
+@theme {
+  --font-display: "Montserrat", sans-serif; 
+}

@@ -1,23 +1,25 @@
 import { useState, useEffect } from "react";
 import { dateToString } from "../utils/dates";
 import api from "../api/axiosClient";
+import { toast } from "react-hot-toast"; // optional if you use toast notifications
 
-const AddTaskModal = ({ open, onClose, defaultDate, onAddTask }) => {
+const EditTaskModal = ({ open, onClose, task, onUpdateTask, onDeleteTask }) => {
   const [date, setDate] = useState(dateToString(new Date()));
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (defaultDate) {
+    if (task) {
       try {
-        const d = typeof defaultDate === "string" ? new Date(defaultDate) : defaultDate;
+        const d = typeof task.startTime === "string" ? new Date(task.startTime) : task.startTime;
         if (!Number.isNaN(d.getTime())) setDate(dateToString(d));
       } catch {}
     }
-  }, [defaultDate]);
+  }, [task]);
+
+  if (!task || !open) return null;
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
     const form = e.currentTarget;
 
     if (!form.checkValidity()) {
@@ -29,11 +31,11 @@ const AddTaskModal = ({ open, onClose, defaultDate, onAddTask }) => {
 
     const title = data.get("title");
     const description = data.get("description");
-    const startTime = data.get("startTime");
-    const endTime = data.get("endTime");
+    const startTimeInput = data.get("startTime");
+    const endTimeInput = data.get("endTime");
     const important = data.get("important") === "on";
 
-    if (endTime < startTime) {
+    if (endTimeInput < startTimeInput) {
       form.querySelector("[name=endTime]").setCustomValidity(
         "Время окончания не может быть раньше времени начала"
       );
@@ -43,10 +45,11 @@ const AddTaskModal = ({ open, onClose, defaultDate, onAddTask }) => {
 
     setSubmitting(true);
     try {
-      const startLocal = `${date}T${startTime}:00`;
-      const endLocal = `${date}T${endTime}:00`;
+      const startLocal = `${date}T${startTimeInput}:00`;
+      const endLocal = `${date}T${endTimeInput}:00`;
 
       const payload = {
+        Id: task.id,
         Title: title,
         Description: description,
         StartTime: new Date(startLocal).toISOString(),
@@ -54,40 +57,58 @@ const AddTaskModal = ({ open, onClose, defaultDate, onAddTask }) => {
         IsImportant: important,
       };
 
-      const res = await api.post("/ScheduleItem", payload);
+      await api.put("/ScheduleItem", payload);
 
-      onAddTask({
-        ...res.data,
-        startTime: new Date(res.data.startTime),
-        endTime: new Date(res.data.endTime),
+      // Update parent state immediately
+      onUpdateTask({
+        ...task,
+        title,
+        description,
+        startTime: new Date(startLocal),
+        endTime: new Date(endLocal),
+        isImportant: important,
       });
 
       onClose();
       form.reset();
-    } 
-    catch (err) 
-    {
+    } catch (err) {
       console.error(err);
-      toast.error("Не удалось создать задачу");
-    }
-    finally 
-    {
+      toast?.error?.("Не удалось сохранить задачу");
+    } finally {
       setSubmitting(false);
     }
   };
 
-  if (!open) return null;
+  const handleDelete = async () => {
+    setSubmitting(true);
+    try {
+      await api.delete(`/ScheduleItem/${task.id}`);
+      onDeleteTask(task.id);
+      onClose();
+    } catch (err) {
+      console.error(err);
+      toast?.error?.("Не удалось удалить задачу");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+
+  // Pre-fill time fields
+  const startTimeDefault = task.startTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const endTimeDefault = task.endTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
   return (
     <div className="modal modal-open">
       <div className="modal-box max-w-lg">
-        <h3 className="font-bold text-lg mb-4">Новая задача</h3>
+        <h3 className="font-bold text-lg mb-4">Редактировать задачу</h3>
 
         <form onSubmit={onSubmit} className="space-y-3">
           <input
             name="title"
             required
             minLength={3}
+            defaultValue={task.title}
             placeholder="Название задачи"
             className="input input-bordered w-full validator"
           />
@@ -95,6 +116,7 @@ const AddTaskModal = ({ open, onClose, defaultDate, onAddTask }) => {
           <textarea
             name="description"
             placeholder="Описание (опционально)"
+            defaultValue={task.description}
             className="textarea textarea-bordered w-full"
             rows={3}
           />
@@ -112,14 +134,14 @@ const AddTaskModal = ({ open, onClose, defaultDate, onAddTask }) => {
               type="time"
               name="startTime"
               required
-              defaultValue="09:00"
+              defaultValue={startTimeDefault}
               className="input input-bordered w-full validator"
             />
             <input
               type="time"
               name="endTime"
               required
-              defaultValue="10:00"
+              defaultValue={endTimeDefault}
               className="input input-bordered w-full validator"
               onChange={(e) => {
                 e.target.form?.querySelector("[name=endTime]")?.setCustomValidity("");
@@ -132,26 +154,37 @@ const AddTaskModal = ({ open, onClose, defaultDate, onAddTask }) => {
             <input
               type="checkbox"
               name="important"
+              defaultChecked={task.isImportant}
               className="toggle toggle-primary"
             />
           </label>
 
-          <div className="modal-action">
-            <button type="button" className="btn" onClick={onClose}>
-              Отмена
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
+          <div className="modal-action justify-between">
+            <button 
+              type="button"
+              className="btn btn-error"
+              onClick={handleDelete}
               disabled={submitting}
             >
-              {submitting ? "Создание..." : "Создать"}
+              Удалить
             </button>
+            <div className="flex gap-2">
+              <button type="button" className="btn" onClick={onClose}>
+                Отмена
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={submitting}
+              >
+                Сохранить
+              </button>
+            </div>
           </div>
         </form>
       </div>
     </div>
   );
-}
+};
 
-export default AddTaskModal;
+export default EditTaskModal;

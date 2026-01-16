@@ -10,6 +10,7 @@ namespace Domain.ScheduleItems
         public DateTime? EndTime { get; set; }
 
         public ScheduleItemStatus? Status { get; set; }
+        public bool IsImportant { get; set; }
 
         public int UserId { get; set; }
         public User User { get; set; }
