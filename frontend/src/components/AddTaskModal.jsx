@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { dateToString } from "../utils/dates";
 import api from "../api/axiosClient";
+import toast from "react-hot-toast";
 
 const AddTaskModal = ({ open, onClose, defaultDate, onAddTask }) => {
   const [date, setDate] = useState(dateToString(new Date()));
@@ -114,6 +115,9 @@ const AddTaskModal = ({ open, onClose, defaultDate, onAddTask }) => {
               required
               defaultValue="09:00"
               className="input input-bordered w-full validator"
+              onChange={(e) => {
+                e.target.form?.querySelector("[name=endTime]")?.setCustomValidity("");
+              }}
             />
             <input
               type="time"
@@ -142,10 +146,10 @@ const AddTaskModal = ({ open, onClose, defaultDate, onAddTask }) => {
             </button>
             <button
               type="submit"
-              className="btn btn-primary"
+              className="btn btn-neutral"
               disabled={submitting}
             >
-              {submitting ? "Создание..." : "Создать"}
+              Создать
             </button>
           </div>
         </form>

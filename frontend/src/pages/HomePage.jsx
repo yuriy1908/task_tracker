@@ -158,7 +158,7 @@ const HomePage = () =>
         onDragCancel={() => setActiveTask(null)}
         sensors={sensors}
       >
-        <div className="grid grid-cols-1 md:grid-cols-7 gap-4 ">
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-4 items-start">
           {daysOfWeek.map((day, index) => {
             const dayDate = addDays(weekStart, index);
             return (<DayColumn

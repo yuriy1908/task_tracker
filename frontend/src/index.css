@@ -3,12 +3,12 @@
   themes: winter --default;
 }
 
-/* input:-webkit-autofill,
+input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active{
     transition-delay: 9999s;
-} */
+}
 
 @layer base {
   @font-face {

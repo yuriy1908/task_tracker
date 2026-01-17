@@ -66,13 +66,13 @@ const LoginPage = () => {
             </label>
             <div className="card-actions justify-around w-full my-2">
               <button 
-                className="btn btn-primary grow"
+                className="btn btn-neutral grow"
                 disabled={loading}
                 type="submit">
                   Войти</button>
             </div>
           </form>
-          <p>Нет аккаунта? <button className="link link-primary" onClick={ () => {navigate("/register")}}>Регистрация</button></p>
+          <p>Нет аккаунта? <button className="link link-neutral" onClick={ () => {navigate("/register")}}>Регистрация</button></p>
         </div>
       </div>      
     </div>

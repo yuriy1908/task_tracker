@@ -136,6 +136,9 @@ const EditTaskModal = ({ open, onClose, task, onUpdateTask, onDeleteTask }) => {
               required
               defaultValue={startTimeDefault}
               className="input input-bordered w-full validator"
+              onChange={(e) => {
+                e.target.form?.querySelector("[name=endTime]")?.setCustomValidity("");
+              }}
             />
             <input
               type="time"
@@ -174,7 +177,7 @@ const EditTaskModal = ({ open, onClose, task, onUpdateTask, onDeleteTask }) => {
               </button>
               <button
                 type="submit"
-                className="btn btn-primary"
+                className="btn btn-neutral"
                 disabled={submitting}
               >
                 Сохранить

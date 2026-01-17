@@ -73,13 +73,13 @@ const RegisterPage = () => {
             </label>
             <div className="card-actions justify-around w-full my-2">
               <button 
-                className="btn btn-primary grow" 
+                className="btn btn-neutral grow" 
                 disabled={loading}
                 type="submit">
                   Зарегистрироваться</button>
             </div>
           </form>
-          <p>Уже есть аккаунт? <button className="link link-primary" onClick={ () => {navigate("/login")}}>Вход</button></p>
+          <p>Уже есть аккаунт? <button className="link link-neutral" onClick={ () => {navigate("/login")}}>Вход</button></p>
         </div>
         
         

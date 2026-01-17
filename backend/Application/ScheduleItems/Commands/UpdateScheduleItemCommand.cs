@@ -7,6 +7,7 @@ namespace Application.ScheduleItems.Commands
         int Id, 
         string Title,
         string Description,
+        bool IsImportant,
         DateTime StartTime,
         DateTime EndTime,
         ScheduleItemStatus Status) : IRequest;
@@ -27,13 +28,15 @@ namespace Application.ScheduleItems.Commands
             if (request.Description != null) 
                 scheduleItem.Description = request.Description;
 
+            scheduleItem.IsImportant = request.IsImportant;
+
             if (request.StartTime != default) 
                 scheduleItem.StartTime = request.StartTime;
 
             if (request.EndTime != default) 
                 scheduleItem.EndTime = request.EndTime;
             
-            if (scheduleItem.Status  != null)
+            if (scheduleItem.Status != null)
                 scheduleItem.Status = request.Status;
 
             await scheduleItemRepository.Update(scheduleItem, cancellationToken);
